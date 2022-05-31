@@ -8,6 +8,7 @@ class App {
     // ...
     this.app = express();
     this.config();
+    this.app.use(express.json());
     // ...
   }
 
