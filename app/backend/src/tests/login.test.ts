@@ -8,7 +8,7 @@ import { app } from '../app';
 import User from '../database/models/user';
 
 import { Response } from 'superagent';
-import { adminLogin } from './mocks';
+import { adminLogin, adminLoginResult } from './mocks';
 
 chai.use(chaiHttp);
 
@@ -22,7 +22,7 @@ describe('Login', () => {
     beforeEach(async () => {
       sinon
         .stub(User, "findOne")
-        .resolves(adminLogin as User)
+        .resolves(adminLoginResult as User)
   
         sinon.stub(bcrypt, "compareSync")
         .resolves(true);
@@ -37,11 +37,12 @@ describe('Login', () => {
       chaiHttpResponse = await chai
         .request(app)
         .post('/login')
+        .send(adminLogin)
   
       const { user, token } = chaiHttpResponse.body
   
       expect(chaiHttpResponse.status).to.be.equal(200);
-      expect(user).deep.equal(adminLogin.userData)
+      expect(user).deep.equal(adminLoginResult.userData)
       expect(token).not.equal(undefined);
     });
   });
@@ -60,6 +61,7 @@ describe('Login', () => {
         chaiHttpResponse = await chai
           .request(app)
           .post('/login')
+          .send(adminLogin)
     
         const { message } = chaiHttpResponse.body
     
@@ -73,7 +75,7 @@ describe('Login', () => {
       beforeEach(async () => {
         sinon
           .stub(User, "findOne")
-          .resolves(adminLogin as User)
+          .resolves(adminLoginResult as User)
     
           sinon.stub(bcrypt, "compareSync")
           .returns(false);
@@ -88,6 +90,7 @@ describe('Login', () => {
         chaiHttpResponse = await chai
           .request(app)
           .post('/login')
+          .send(adminLogin)
     
         const { message } = chaiHttpResponse.body
     
@@ -97,13 +100,28 @@ describe('Login', () => {
     });
 
     describe('Login sem email informado', () => {
-
       it('Retorna status 400 e a menssagem "All fields must be filled"', async () => {
         chaiHttpResponse = await chai
           .request(app)
           .post('/login')
           .send({
-            password: '123456'
+            password: adminLogin.password
+          })
+    
+        const { message } = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(400);
+        expect(message).equal('All fields must be filled')
+      });
+    });
+
+    describe('Login sem senha informada', () => {
+      it('Retorna status 400 e a menssagem "All fields must be filled"', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/login')
+          .send({
+            email: adminLogin.email
           })
     
         const { message } = chaiHttpResponse.body

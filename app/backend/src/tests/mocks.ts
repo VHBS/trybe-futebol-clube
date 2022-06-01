@@ -1,6 +1,11 @@
 import User from "../database/models/user";
 
 const adminLogin = {
+  email: "admin@admin.com",
+  password: "secret_admin"
+}
+
+const adminLoginResult = {
   userData: {
     id: 1,
     username: "Admin",
@@ -8,4 +13,4 @@ const adminLogin = {
     email: "admin@admin.com",
 }} as User
 
-export { adminLogin }
+export { adminLogin, adminLoginResult }
