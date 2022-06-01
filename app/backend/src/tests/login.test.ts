@@ -30,9 +30,10 @@ describe('Login', () => {
   
     afterEach(()=>{
       (User.findOne as sinon.SinonStub).restore();
+      (bcrypt.compareSync as sinon.SinonStub).restore();
     })
   
-    it('Login Admin', async () => {
+    it('Retorna status 200 com os dados do usuário e o token', async () => {
       chaiHttpResponse = await chai
         .request(app)
         .post('/login')
@@ -42,6 +43,57 @@ describe('Login', () => {
       expect(chaiHttpResponse.status).to.be.equal(200);
       expect(user).deep.equal(adminLogin.userData)
       expect(token).not.equal(undefined);
+    });
+  });
+  describe('Login não realizado', () => {
+    describe('Login Admin com email invalido', () => {
+      beforeEach(async () => {
+        sinon
+          .stub(User, "findOne")
+          .resolves(null)
+      });
+    
+      afterEach(()=>{
+        (User.findOne as sinon.SinonStub).restore();
+      })
+      it('Retorna status 401 e a menssagem "Incorrect email or password"', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/login')
+    
+        const { message } = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(401);
+        expect(message).equal('Incorrect email or password')
+      });
+    });
+
+    describe('Login Admin com senha invalida', () => {
+
+      beforeEach(async () => {
+        sinon
+          .stub(User, "findOne")
+          .resolves(adminLogin as User)
+    
+          sinon.stub(bcrypt, "compareSync")
+          .returns(false);
+      });
+    
+      afterEach(()=>{
+        (User.findOne as sinon.SinonStub).restore();
+        (bcrypt.compareSync as sinon.SinonStub).restore();
+      })
+  
+      it('Retorna status 401 e a menssagem "Incorrect email or password"', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/login')
+    
+        const { message } = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(401);
+        expect(message).equal('Incorrect email or password')
+      });
     });
   });
 });
