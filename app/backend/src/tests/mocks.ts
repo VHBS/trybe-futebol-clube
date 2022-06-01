@@ -13,4 +13,10 @@ const adminLoginResult = {
     email: "admin@admin.com",
 }} as User
 
-export { adminLogin, adminLoginResult }
+const adminLoginJwtVerify = {
+  data: { id: 1, username: 'Admin', role: 'admin', email: 'admin@admin.com' },
+  iat: 1654110031,
+  exp: 1654714831
+}
+
+export { adminLogin, adminLoginResult, adminLoginJwtVerify }

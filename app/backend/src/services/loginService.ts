@@ -25,6 +25,9 @@ export default class LoginService {
     const token = jwt.sign({
       data: user.userData }, Secret.reader(), { expiresIn: '7d', algorithm: 'HS256' });
 
+    const teste = jwt.verify(token, Secret.reader());
+
+    console.log(teste);
     return { code: 200, message: { user: user.userData, token } };
   }
 }
