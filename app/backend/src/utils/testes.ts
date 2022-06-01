@@ -1,10 +1,10 @@
-// import User from '../database/models/user';
+import User from '../database/models/user';
 
-// const vitor = {
-//   username: 'victor',
-//   email: 'victorgow2@gmail.com',
-//   password: '123456',
-// };
+const vitor = {
+  username: 'victor',
+  email: 'victorgow2@gmail.com',
+  password: '123456',
+};
 
 // const userAll = async () => {
 //   const result = await User.findAll();
@@ -26,3 +26,7 @@
 // findUser();
 // userAll();
 // createUser();
+
+const teste = User.build(vitor);
+
+console.log(teste);
