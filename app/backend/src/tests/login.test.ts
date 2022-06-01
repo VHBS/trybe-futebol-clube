@@ -95,5 +95,22 @@ describe('Login', () => {
         expect(message).equal('Incorrect email or password')
       });
     });
+
+    describe('Login sem email informado', () => {
+
+      it('Retorna status 400 e a menssagem "All fields must be filled"', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/login')
+          .send({
+            password: '123456'
+          })
+    
+        const { message } = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(400);
+        expect(message).equal('All fields must be filled')
+      });
+    });
   });
 });
