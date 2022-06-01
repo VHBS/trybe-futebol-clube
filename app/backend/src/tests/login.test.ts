@@ -148,7 +148,7 @@ describe('Login', () => {
       (jwt.verify as sinon.SinonStub).restore();
     })
   
-    it('Retorna status 200 com os dados do usuário e o token', async () => {
+    it('Retorna status 200 e a role do usuario', async () => {
       chaiHttpResponse = await chai
         .request(app)
         .get('/login/validate')

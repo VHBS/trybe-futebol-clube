@@ -1,6 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
-import Secret from '../utils/jwtSecret';
+import Jwt from '../utils/jwt';
 import User from '../database/models/user';
 
 export default class LoginService {
@@ -22,12 +21,8 @@ export default class LoginService {
       return { code: 401, message: { message: 'Incorrect email or password' } };
     }
 
-    const token = jwt.sign({
-      data: user.userData }, Secret.reader(), { expiresIn: '7d', algorithm: 'HS256' });
+    const token = Jwt.sign(user.userData);
 
-    const teste = jwt.verify(token, Secret.reader());
-
-    console.log(teste);
     return { code: 200, message: { user: user.userData, token } };
   }
 }
