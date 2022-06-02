@@ -1,4 +1,7 @@
 // import Match from '../database/models/Match';
+// import Team from '../database/models/Team';
+
+// ______________________________________________
 
 // const matchPlay = {
 //   homeTeam: 1,
@@ -20,11 +23,19 @@
 //   console.log(result?.homeTeam);
 // };
 
+// const findAllMatch = async () => {
+//   const result = await Match.findAll({
+//     include: [
+//       { model: Team, as: 'teamHome', attributes: { exclude: ['id'] } },
+//       { model: Team, as: 'teamAway', attributes: { exclude: ['id'] } },
+//     ],
+//   });
+//   console.log(result[0]);
+// };
+
 // createMatch();
 // findMatch();
-
-// ______________________________________________
-// import Team from '../database/models/Team';
+// findAllMatch();
 
 // const allTeams = async () => {
 //   const result = await Team.findAll();
