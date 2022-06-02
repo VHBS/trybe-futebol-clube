@@ -8,7 +8,7 @@ import Example from '../database/models/ExampleModel';
 
 import { Response } from 'superagent';
 import Team from '../database/models/Team';
-import { allTeams } from './mocks/teamMocks';
+import { allTeams, team } from './mocks/teamMocks';
 
 chai.use(chaiHttp);
 
@@ -18,24 +18,50 @@ describe('Teams', () => {
 
   let chaiHttpResponse: Response;
 
-  beforeEach(() => {
-    sinon
-      .stub(Team, "findAll")
-      .resolves(allTeams);
+  describe('Retorna todos os times', () => {
+    beforeEach(() => {
+      sinon
+        .stub(Team, "findAll")
+        .resolves(allTeams);
+    });
+  
+    afterEach(()=>{
+      (Team.findAll as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 200 com os times', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/teams')
+      
+        const teams = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(teams).deep.equal(allTeams)
+    });
   });
 
-  afterEach(()=>{
-    (Team.findAll as sinon.SinonStub).restore();
-  })
-
-  it('Retorna status 200 com os times', async () => {
-    chaiHttpResponse = await chai
-      .request(app)
-      .get('/teams')
-    
-      const teams = chaiHttpResponse.body;
-
-    expect(chaiHttpResponse.status).to.be.equal(200);
-    expect(teams).deep.equal(allTeams)
+  describe('Retorna um time através do id', () => {
+    beforeEach(() => {
+      sinon
+        .stub(Team, "findOne")
+        .resolves(team);
+    });
+  
+    afterEach(()=>{
+      (Team.findOne as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 200 com o time', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/teams/1')
+      
+        const teamResult = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(teamResult).deep.equal(team)
+    });
   });
+
 });
