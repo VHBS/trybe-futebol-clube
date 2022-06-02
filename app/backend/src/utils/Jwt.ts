@@ -15,7 +15,7 @@ export default class Jwt implements IJwt {
   }
 
   public verify(token: string): jwt.JwtPayload {
-    const teste = jwt.verify(token, this._secret) as jwt.JwtPayload;
-    return teste;
+    const jwtPayload = jwt.verify(token, this._secret) as jwt.JwtPayload;
+    return jwtPayload;
   }
 }
