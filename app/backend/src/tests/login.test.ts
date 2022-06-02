@@ -1,56 +1,54 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import * as bcrypt from 'bcrypt';
-import * as jwt from 'jsonwebtoken';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import User from '../database/models/user';
+import User from '../database/models/User';
 
 import { Response } from 'superagent';
-import { adminLogin, adminLoginJwtVerify, adminLoginResult } from './mocks';
+import { adminDb } from './mocks';
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
 describe('Login', () => {
-
   let chaiHttpResponse: Response;
 
   describe('Login realizado com sucesso', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       sinon
         .stub(User, "findOne")
-        .resolves(adminLoginResult as User)
-  
-        sinon.stub(bcrypt, "compareSync")
-        .resolves(true);
+        .resolves(adminDb)
     });
   
     afterEach(()=>{
       (User.findOne as sinon.SinonStub).restore();
-      (bcrypt.compareSync as sinon.SinonStub).restore();
     })
   
     it('Retorna status 200 com os dados do usuário e o token', async () => {
       chaiHttpResponse = await chai
         .request(app)
         .post('/login')
-        .send(adminLogin)
+        .send({
+          email: "admin@admin.com",
+          password: "secret_admin"
+        })
   
       const { user, token } = chaiHttpResponse.body
   
       expect(chaiHttpResponse.status).to.be.equal(200);
-      expect(user).deep.equal(adminLoginResult.userData)
+      expect(user).deep.equal(adminDb.userData)
       expect(token).not.equal(undefined);
+
+
     });
   });
 
   describe('Login não realizado', () => {
     describe('Login Admin com email invalido', () => {
-      beforeEach(async () => {
+      beforeEach(() => {
         sinon
           .stub(User, "findOne")
           .resolves(null)
@@ -63,7 +61,10 @@ describe('Login', () => {
         chaiHttpResponse = await chai
           .request(app)
           .post('/login')
-          .send(adminLogin)
+          .send({
+            email: "email@errado.com",
+            password: "secret_admin"
+          })
     
         const { message } = chaiHttpResponse.body
     
@@ -74,25 +75,24 @@ describe('Login', () => {
 
     describe('Login Admin com senha invalida', () => {
 
-      beforeEach(async () => {
+      beforeEach(() => {
         sinon
           .stub(User, "findOne")
-          .resolves(adminLoginResult as User)
-    
-          sinon.stub(bcrypt, "compareSync")
-          .returns(false);
+          .resolves(adminDb)
       });
     
       afterEach(()=>{
         (User.findOne as sinon.SinonStub).restore();
-        (bcrypt.compareSync as sinon.SinonStub).restore();
       })
   
       it('Retorna status 401 e a menssagem "Incorrect email or password"', async () => {
         chaiHttpResponse = await chai
           .request(app)
           .post('/login')
-          .send(adminLogin)
+          .send({
+            email: "admin@admin.com",
+            password: "senha_errada"
+          })
     
         const { message } = chaiHttpResponse.body
     
@@ -107,7 +107,7 @@ describe('Login', () => {
           .request(app)
           .post('/login')
           .send({
-            password: adminLogin.password
+            password: "secret_admin"
           })
     
         const { message } = chaiHttpResponse.body
@@ -123,7 +123,7 @@ describe('Login', () => {
           .request(app)
           .post('/login')
           .send({
-            email: adminLogin.email
+            email: "admin@admin.com"
           })
     
         const { message } = chaiHttpResponse.body
@@ -135,29 +135,37 @@ describe('Login', () => {
   });
 
   describe('Valida a role do usuário', () => {
-    let chaiHttpResponse: Response;
+  describe('Login validado com sucesso', () => {
 
-  describe('Login realizado com sucesso', () => {
     beforeEach(async () => {
       sinon
-        .stub(jwt, "verify")
-        .resolves(adminLoginJwtVerify)
+        .stub(User, "findOne")
+        .resolves(adminDb)
     });
   
     afterEach(()=>{
-      (jwt.verify as sinon.SinonStub).restore();
+      (User.findOne as sinon.SinonStub).restore();
     })
-  
+
     it('Retorna status 200 e a role do usuario', async () => {
+      const {body: { token }} = await chai
+        .request(app)
+        .post('/login')
+        .send({
+          email: "admin@admin.com",
+          password: "secret_admin"
+        })
+
       chaiHttpResponse = await chai
         .request(app)
         .get('/login/validate')
+        .set({ authorization: token })
   
       const role = chaiHttpResponse.body
   
       expect(chaiHttpResponse.status).to.be.equal(200);
-      expect(role).deep.equal("admin")
+      expect(role).equal("admin")
     });
   });
-  })
+  });
 });

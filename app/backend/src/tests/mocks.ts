@@ -1,22 +1,21 @@
-import User from "../database/models/user";
+import User from "../database/models/User";
 
 const adminLogin = {
   email: "admin@admin.com",
   password: "secret_admin"
 }
 
-const adminLoginResult = {
+const adminDb = {
+  username: 'Admin',
+  role: 'admin',
+  email: 'admin@admin.com',
+  password: '$2a$08$xi.Hxk1czAO0nZR..B393u10aED0RQ1N3PAEXQ7HxtLjKPEZBu.PW',
   userData: {
     id: 1,
-    username: "Admin",
-    role: "admin",
-    email: "admin@admin.com",
-}} as User
+    username: 'Admin',
+    role: 'admin',
+    email: 'admin@admin.com',
+  }
+} as User
 
-const adminLoginJwtVerify = {
-  data: { id: 1, username: 'Admin', role: 'admin', email: 'admin@admin.com' },
-  iat: 1654110031,
-  exp: 1654714831
-}
-
-export { adminLogin, adminLoginResult, adminLoginJwtVerify }
+export { adminLogin, adminDb }

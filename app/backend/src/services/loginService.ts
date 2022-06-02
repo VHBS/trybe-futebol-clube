@@ -1,11 +1,12 @@
 import * as bcrypt from 'bcrypt';
-import Jwt from '../utils/jwt';
-import User from '../database/models/user';
+import Jwt from '../utils/Jwt';
+import User from '../database/models/User';
 
-export default class LoginService {
+export default class LoginService extends Jwt {
   private _userModel;
 
   constructor() {
+    super();
     this._userModel = User;
   }
 
@@ -21,8 +22,14 @@ export default class LoginService {
       return { code: 401, message: { message: 'Incorrect email or password' } };
     }
 
-    const token = Jwt.sign(user.userData);
+    const token = this.sign(user.userData);
 
     return { code: 200, message: { user: user.userData, token } };
+  }
+
+  public validate({ authorization }: { authorization: string }) {
+    const { data: { role } } = this.verify(authorization);
+
+    return { code: 200, message: role };
   }
 }
