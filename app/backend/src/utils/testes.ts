@@ -24,6 +24,16 @@
 // findMatch();
 
 // ______________________________________________
+// import Team from '../database/models/Team';
+
+// const allTeams = async () => {
+//   const result = await Team.findAll();
+//   console.log(result);
+// };
+
+// allTeams();
+
+// ______________________________________________
 
 // import User from '../database/models/user';
 // const vitor = {
