@@ -1,16 +1,20 @@
 import * as express from 'express';
+import ErrorMiddleware from './middlewares/ErrorMiddleware';
+import IErrorMiddleware from './middlewares/interfaces/IErrorMiddleware';
 import routes from './routes';
 
 class App {
   public app: express.Express;
-  // ...
+  private _error: IErrorMiddleware;
 
   constructor() {
     // ...
+    this._error = new ErrorMiddleware();
     this.app = express();
     this.config();
     this.app.use(express.json());
     this.app.use(routes);
+    this.app.use(this._error.server.bind(this._error));
     // ...
   }
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import LoginService from '../services/loginService';
+import LoginService from '../services/LoginService';
 import ILoginController from './interfaces/ILoginController';
 
 export default class LoginController implements ILoginController {
@@ -9,18 +9,17 @@ export default class LoginController implements ILoginController {
     this._loginService = new LoginService();
   }
 
-  public async login(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  public async login(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { email, password } = req.body;
       const result = await this._loginService.login(email, password);
       return res.status(result.code).json(result.message);
     } catch (e) {
       next(e);
-      return res.status(500).json({ message: 'ops!' });
     }
   }
 
-  public async validate(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  public async validate(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { authorization } = req.headers;
 
@@ -31,7 +30,6 @@ export default class LoginController implements ILoginController {
       return res.status(result.code).json(result.message);
     } catch (e) {
       next(e);
-      return res.status(500).json({ message: 'ops!' });
     }
   }
 }
