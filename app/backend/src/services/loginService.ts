@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import Jwt from '../utils/Jwt';
 import User from '../database/models/User';
 
