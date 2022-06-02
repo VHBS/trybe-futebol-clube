@@ -1,4 +1,4 @@
-import { LoginServiceLogin, LoginServiceValidate } from '../types/TypesLogin';
+import { LoginServiceLogin, LoginServiceValidate } from '../types/TypesLoginService';
 
 export default interface ILoginService {
   login(email: string, password: string): Promise<LoginServiceLogin>
