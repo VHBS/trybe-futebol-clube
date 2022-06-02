@@ -15,4 +15,9 @@ const allTeams = [
 	}
 ] as Team[]
 
-export { allTeams }
+const team = {
+  id: 1,
+  teamName: "Avaí/Kindermann"
+} as Team
+
+export { allTeams, team }

@@ -8,6 +8,10 @@ teamRouter
   .get(
     '/',
     teamController.getAll.bind(teamController),
+  )
+  .get(
+    '/:id',
+    teamController.getById.bind(teamController),
   );
 
 export default teamRouter;
