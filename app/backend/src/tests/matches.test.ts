@@ -2,12 +2,13 @@ import * as sinon from 'sinon';
 import * as chai from 'chai';
 // @ts-ignore
 import chaiHttp = require('chai-http');
+import { before } from 'mocha';
 
 import { app } from '../app';
 
 import { Response } from 'superagent';
 import Match from '../database/models/Match';
-import { allMatches, allMatchesEnded, allMatchesInProgress } from './mocks/matchMocks';
+import { allMatches, allMatchesEnded, allMatchesInProgress, resultNewMatch, requestNewMatch } from './mocks/matchMocks';
 
 chai.use(chaiHttp);
 
@@ -83,6 +84,30 @@ describe('Matches', () => {
   
       expect(chaiHttpResponse.status).to.be.equal(200);
       expect(matches).deep.equal(allMatchesEnded)
+    });
+  });
+
+  describe('Insere uma partida em andamendo', () => {
+    before(() => {
+      sinon
+        .stub(Match, "create")
+        .resolves(resultNewMatch);
+    });
+  
+    after(()=>{
+      (Match.create as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 200 com a partida', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .post('/matches')
+        .send(requestNewMatch)
+      
+        const match = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(match).deep.equal(resultNewMatch)
     });
   });
 });
