@@ -1,6 +1,7 @@
 import Team from '../database/models/Team';
+import ITeamService from './interfaces/ITeamService';
 
-export default class TeamService {
+export default class TeamService implements ITeamService {
   private _teamModel;
 
   constructor() {
@@ -12,8 +13,9 @@ export default class TeamService {
     return { code: 200, message: result };
   }
 
-  public async getById(id: string) {
+  public async getById(id: number) {
     const result = await this._teamModel.findOne({ where: { id } });
+    if (!result) return { code: 400, message: { message: 'Time não encontrado' } };
     return { code: 200, message: result };
   }
 }

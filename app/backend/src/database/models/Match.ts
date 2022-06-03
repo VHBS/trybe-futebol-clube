@@ -9,8 +9,8 @@ class Match extends Model {
   private _awayTeam: number;
   private _awayTeamGoals: number;
   private _inProgress: boolean;
-  private _teamHome: { teamName: string };
-  private _teamAway: { teamName: string };
+  teamHome: { teamName: string };
+  teamAway: { teamName: string };
 
   get id(): number {
     return this._id;
@@ -34,14 +34,6 @@ class Match extends Model {
 
   get inProgress(): boolean {
     return this._inProgress;
-  }
-
-  get teamHome(): { teamName: string } {
-    return { teamName: this._teamHome.teamName };
-  }
-
-  get teamAway(): { teamName: string } {
-    return { teamName: this._teamAway.teamName };
   }
 }
 

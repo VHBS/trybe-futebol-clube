@@ -21,7 +21,7 @@ export default class TeamController implements ITeamController {
   public async getById(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
       const { id } = req.params;
-      const result = await this._teamService.getById(id);
+      const result = await this._teamService.getById(Number(id));
       return res.status(result.code).json(result.message);
     } catch (e) {
       next(e);
