@@ -17,13 +17,13 @@ describe('Login', () => {
   let chaiHttpResponse: Response;
 
   describe('Login realizado com sucesso', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(User, "findOne")
         .resolves(adminDb)
     });
   
-    afterEach(()=>{
+    after(()=>{
       (User.findOne as sinon.SinonStub).restore();
     })
   
@@ -48,13 +48,13 @@ describe('Login', () => {
 
   describe('Login não realizado', () => {
     describe('Login Admin com email invalido', () => {
-      beforeEach(() => {
+      before(() => {
         sinon
           .stub(User, "findOne")
           .resolves(null)
       });
     
-      afterEach(()=>{
+      after(()=>{
         (User.findOne as sinon.SinonStub).restore();
       })
       it('Retorna status 401 e a menssagem "Incorrect email or password"', async () => {
@@ -75,13 +75,13 @@ describe('Login', () => {
 
     describe('Login Admin com senha invalida', () => {
 
-      beforeEach(() => {
+      before(() => {
         sinon
           .stub(User, "findOne")
           .resolves(adminDb)
       });
     
-      afterEach(()=>{
+      after(()=>{
         (User.findOne as sinon.SinonStub).restore();
       })
   
@@ -137,13 +137,13 @@ describe('Login', () => {
   describe('Valida a role do usuário', () => {
   describe('Login validado com sucesso', () => {
 
-    beforeEach(async () => {
+    before(async () => {
       sinon
         .stub(User, "findOne")
         .resolves(adminDb)
     });
   
-    afterEach(()=>{
+    after(()=>{
       (User.findOne as sinon.SinonStub).restore();
     })
 

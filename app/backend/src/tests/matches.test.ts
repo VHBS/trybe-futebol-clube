@@ -18,13 +18,13 @@ describe('Matches', () => {
   let chaiHttpResponse: Response;
 
   describe('Retorna todos as partidas', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(Match, "findAll")
         .resolves(allMatches);
     });
   
-    afterEach(()=>{
+    after(()=>{
       (Match.findAll as sinon.SinonStub).restore();
     })
   
@@ -41,13 +41,13 @@ describe('Matches', () => {
   });
 
   describe('Retorna todos as partidas em andamento', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(Match, "findAll")
         .resolves(allMatchesInProgress);
     });
   
-    afterEach(()=>{
+    after(()=>{
       (Match.findAll as sinon.SinonStub).restore();
     })
   
@@ -64,13 +64,13 @@ describe('Matches', () => {
   });
 
   describe('Retorna todos as partidas finalizadas', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(Match, "findAll")
         .resolves(allMatchesEnded);
     });
   
-    afterEach(()=>{
+    after(()=>{
       (Match.findAll as sinon.SinonStub).restore();
     })
   

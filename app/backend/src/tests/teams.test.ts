@@ -18,13 +18,13 @@ describe('Teams', () => {
   let chaiHttpResponse: Response;
 
   describe('Retorna todos os times', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(Team, "findAll")
         .resolves(allTeams);
     });
   
-    afterEach(()=>{
+    after(()=>{
       (Team.findAll as sinon.SinonStub).restore();
     })
   
@@ -41,13 +41,13 @@ describe('Teams', () => {
   });
 
   describe('Retorna um time através do id', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(Team, "findOne")
         .resolves(team);
     });
   
-    afterEach(()=>{
+    after(()=>{
       (Team.findOne as sinon.SinonStub).restore();
     })
   
@@ -64,13 +64,13 @@ describe('Teams', () => {
   });
 
   describe('Retorna uma mensagem caso não encontre um time com o id', () => {
-    beforeEach(() => {
+    before(() => {
       sinon
         .stub(Team, "findOne")
         .resolves(null);
     });
   
-    afterEach(()=>{
+    after(()=>{
       (Team.findOne as sinon.SinonStub).restore();
     })
   
