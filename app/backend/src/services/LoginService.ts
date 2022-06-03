@@ -28,9 +28,20 @@ export default class LoginService extends Jwt implements ILoginService {
     return { code: 200, message: { user: user.userData, token } };
   }
 
-  public validate(authorization:string) {
+  public validateRole(authorization:string | undefined) {
+    if (!authorization) return { code: 500, message: { message: 'Token não encontratop' } };
+
     const { data: { role } } = this.verify(authorization);
 
     return { code: 200, message: role };
+  }
+
+  public validateToken(authorization:string | undefined) {
+    if (!authorization) return { code: 500, message: { message: 'Token não encontratop' } };
+
+    const user = this.verify(authorization);
+    console.log(user);
+
+    return { code: 200, message: user.data };
   }
 }

@@ -18,9 +18,14 @@ type LoginServiceLogin = {
   message: MessageLoginSuccess | MessageLoginFail,
 };
 
-type LoginServiceValidate = {
+type LoginServiceValidateRole = {
   code: number,
   message: string,
 };
 
-export { LoginServiceLogin, LoginServiceValidate };
+type LoginServiceValidateToken = {
+  code: number,
+  message: MessageLoginFail | User['userData'],
+};
+
+export { LoginServiceLogin, LoginServiceValidateRole, LoginServiceValidateToken };

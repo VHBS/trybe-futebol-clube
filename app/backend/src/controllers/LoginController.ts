@@ -23,9 +23,7 @@ export default class LoginController implements ILoginController {
     try {
       const { authorization } = req.headers;
 
-      if (!authorization) return res.status(500).json({ message: 'Token não encontratop' });
-
-      const result = this._loginService.validate(authorization);
+      const result = this._loginService.validateRole(authorization);
 
       return res.status(result.code).json(result.message);
     } catch (e) {

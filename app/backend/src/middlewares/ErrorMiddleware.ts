@@ -16,7 +16,7 @@ export default class ErrorMiddleware implements IErrorMiddleware {
     res: Response,
     _next: NextFunction,
   ): Promise<Response> {
-    console.log(err);
+    console.log('erro:', err);
     return res.status(this._code).json({ message: this._message });
   }
 }
