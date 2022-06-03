@@ -63,4 +63,27 @@ describe('Teams', () => {
     });
   });
 
+  describe('Retorna uma mensagem caso não encontre um time com o id', () => {
+    beforeEach(() => {
+      sinon
+        .stub(Team, "findOne")
+        .resolves(null);
+    });
+  
+    afterEach(()=>{
+      (Team.findOne as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 200 com o time', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .get('/teams/100')
+      
+        const teamResult = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(404);
+      expect(teamResult).deep.equal({ message: 'Time não encontrado' })
+    });
+  });
+
 });

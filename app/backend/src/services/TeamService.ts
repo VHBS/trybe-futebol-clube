@@ -15,7 +15,7 @@ export default class TeamService implements ITeamService {
 
   public async getById(id: number) {
     const result = await this._teamModel.findOne({ where: { id } });
-    if (!result) return { code: 400, message: { message: 'Time não encontrado' } };
+    if (!result) return { code: 404, message: { message: 'Time não encontrado' } };
     return { code: 200, message: result };
   }
 }
