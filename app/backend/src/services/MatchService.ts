@@ -1,7 +1,7 @@
 import Team from '../database/models/Team';
 import Match from '../database/models/Match';
 import IMatchService from './interfaces/IMatchService';
-import MatchServiceGetAll from './types/TypesMatchService';
+import { MatchServiceGetAll, MatchServiceCreate } from './types/TypesMatchService';
 
 export default class MatchService implements IMatchService {
   private _matchModel;
@@ -50,5 +50,10 @@ export default class MatchService implements IMatchService {
       ],
     });
     return { code: 200, message: result };
+  }
+
+  public async create(match: Match): Promise<MatchServiceCreate> {
+    const result = await this._matchModel.create(match);
+    return { code: 201, message: result };
   }
 }

@@ -93,4 +93,21 @@ const allMatchesEnded = [
 	}
 ] as Match[];
 
-export { allMatches, allMatchesInProgress, allMatchesEnded }
+const resultNewMatch = {
+  id: 1,
+  homeTeam: 16,
+  homeTeamGoals: 2,
+  awayTeam: 8,
+  awayTeamGoals: 2,
+  inProgress: true
+} as Match;
+
+const requestNewMatch = {
+  homeTeam: 16,
+  awayTeam: 8,
+  homeTeamGoals: 2,
+  awayTeamGoals: 2,
+  inProgress: true
+} as Match
+
+export { allMatches, allMatchesInProgress, allMatchesEnded, resultNewMatch, requestNewMatch }

@@ -29,7 +29,7 @@ export default class LoginService extends Jwt implements ILoginService {
   }
 
   public validateRole(authorization:string | undefined) {
-    if (!authorization) return { code: 500, message: { message: 'Token não encontratop' } };
+    if (!authorization) return { code: 400, message: { message: 'Token não encontrado' } };
 
     const { data: { role } } = this.verify(authorization);
 
@@ -37,10 +37,9 @@ export default class LoginService extends Jwt implements ILoginService {
   }
 
   public validateToken(authorization:string | undefined) {
-    if (!authorization) return { code: 500, message: { message: 'Token não encontratop' } };
+    if (!authorization) return { code: 400, message: { message: 'Token não encontrado' } };
 
     const user = this.verify(authorization);
-    console.log(user);
 
     return { code: 200, message: user.data };
   }

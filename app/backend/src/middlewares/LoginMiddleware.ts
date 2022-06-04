@@ -24,13 +24,15 @@ export default class LoginMidleware {
 
   public async validateToken(
     req: Request,
-    _res: Response,
+    res: Response,
     next: NextFunction,
   ): Promise<Response | void> {
     try {
       const { authorization } = req.headers;
 
       const result = this._loginService.validateToken(authorization);
+
+      if (!authorization) return res.status(result.code).json(result.message);
 
       req.userData = result.message;
       next();

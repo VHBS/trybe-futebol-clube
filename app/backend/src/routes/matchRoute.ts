@@ -14,6 +14,7 @@ matchRouter
   .post(
     '/',
     loginMiddleware.validateToken.bind(loginMiddleware),
+    matchController.create.bind(matchController),
   );
 
 export default matchRouter;

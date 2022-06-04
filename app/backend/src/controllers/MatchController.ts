@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import Match from '../database/models/Match';
 import MatchService from '../services/MatchService';
 import IMatchController from './interfaces/IMatchController';
 
@@ -13,6 +14,21 @@ export default class MatchController implements IMatchController {
     try {
       const { inProgress } = req.query;
       const result = await this._matchService.verifyQuery(inProgress as string | undefined);
+      return res.status(result.code).json(result.message);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async create(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress } = req.body;
+      const result = await this._matchService.create({
+        homeTeam,
+        awayTeam,
+        homeTeamGoals,
+        awayTeamGoals,
+        inProgress } as Match);
       return res.status(result.code).json(result.message);
     } catch (e) {
       next(e);
