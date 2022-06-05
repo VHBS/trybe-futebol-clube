@@ -180,7 +180,7 @@ describe('Matches', () => {
     before(() => {
       sinon
         .stub(Match, "update")
-        .resolves([1] as any);
+        .resolves([1, []]);
     });
   
     after(()=>{
@@ -203,7 +203,7 @@ describe('Matches', () => {
     before(() => {
       sinon
         .stub(Match, "update")
-        .resolves([0] as any);
+        .resolves([0, []]);
     });
   
     after(()=>{
