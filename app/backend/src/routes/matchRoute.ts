@@ -15,6 +15,10 @@ matchRouter
     '/',
     loginMiddleware.validateToken.bind(loginMiddleware),
     matchController.create.bind(matchController),
+  )
+  .patch(
+    '/:id/finish',
+    matchController.update.bind(matchController),
   );
 
 export default matchRouter;

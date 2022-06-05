@@ -1,5 +1,8 @@
 import Match from '../../database/models/Match';
-import { MatchServiceCreate, MatchServiceGetAll } from '../types/TypesMatchService';
+import {
+  MatchServiceCreate,
+  MatchServiceGetAll,
+  MatchServiceUpdate } from '../types/TypesMatchService';
 
 export default interface IMatchService {
   verifyQuery(inProgress: string | undefined): Promise<MatchServiceGetAll>
@@ -7,4 +10,5 @@ export default interface IMatchService {
   getAllInProgress(): Promise<MatchServiceGetAll>
   getAllEnded(): Promise<MatchServiceGetAll>
   create(match: Match): Promise<MatchServiceCreate>
+  update(id: number): Promise<MatchServiceUpdate>
 }
