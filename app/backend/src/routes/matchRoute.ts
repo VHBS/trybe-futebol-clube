@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import LoginMidleware from '../middlewares/LoginMiddleware';
 import MatchController from '../controllers/MatchController';
+import MatchMiddleware from '../middlewares/MatchMiddleware';
 
 const matchRouter = Router();
 const matchController = new MatchController();
@@ -14,6 +15,7 @@ matchRouter
   .post(
     '/',
     loginMiddleware.validateToken.bind(loginMiddleware),
+    MatchMiddleware.createMatchVerify.bind(MatchMiddleware),
     matchController.create.bind(matchController),
   )
   .patch(
