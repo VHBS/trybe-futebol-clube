@@ -22,7 +22,11 @@ matchRouter
   )
   .patch(
     '/:id/finish',
-    matchController.update.bind(matchController),
+    matchController.updateFinish.bind(matchController),
+  )
+  .patch(
+    '/:id',
+    matchController.updateGoals.bind(matchController),
   );
 
 export default matchRouter;

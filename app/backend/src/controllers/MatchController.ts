@@ -35,10 +35,33 @@ export default class MatchController implements IMatchController {
     }
   }
 
-  public async update(req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+  public async updateFinish(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
     try {
       const { id } = req.params;
-      const result = await this._matchService.update(Number(id));
+      const result = await this._matchService.updateFinish(Number(id));
+      return res.status(result.code).json(result.message);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async updateGoals(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<Response | void> {
+    try {
+      const { id } = req.params;
+      const { homeTeamGoals, awayTeamGoals } = req.body;
+      const result = await this._matchService.updateGoals(
+        Number(id),
+        Number(homeTeamGoals),
+        Number(awayTeamGoals),
+      );
       return res.status(result.code).json(result.message);
     } catch (e) {
       next(e);

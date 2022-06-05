@@ -61,7 +61,7 @@ export default class MatchService implements IMatchService {
     return { code: 201, message: result };
   }
 
-  public async update(id: number): Promise<MatchServiceUpdate> {
+  public async updateFinish(id: number): Promise<MatchServiceUpdate> {
     const result = await this._matchModel.update(
       { inProgress: false },
       { where: { id } },
@@ -73,5 +73,23 @@ export default class MatchService implements IMatchService {
           message: 'Partida não encontrada ou já finalizada' } };
     }
     return { code: 200, message: { message: 'Finished' } };
+  }
+
+  public async updateGoals(
+    id: number,
+    homeTeamGoals: number,
+    awayTeamGoals: number,
+  ): Promise<MatchServiceUpdate> {
+    const result = await this._matchModel.update(
+      { homeTeamGoals, awayTeamGoals },
+      { where: { id } },
+    ) as number[];
+
+    if (result[0] === 0) {
+      return { code: 404,
+        message: {
+          message: 'Partida não encontrada, já finalizada ou já possui os dados inseridos' } };
+    }
+    return { code: 200, message: { message: 'Gols atualizados' } };
   }
 }

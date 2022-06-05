@@ -10,5 +10,6 @@ export default interface IMatchService {
   getAllInProgress(): Promise<MatchServiceGetAll>
   getAllEnded(): Promise<MatchServiceGetAll>
   create(match: Match): Promise<MatchServiceCreate>
-  update(id: number): Promise<MatchServiceUpdate>
+  updateFinish(id: number): Promise<MatchServiceUpdate>
+  updateGoals(id: number, homeTeamGoals: number, awayTeamGoals: number): Promise<MatchServiceUpdate>
 }
