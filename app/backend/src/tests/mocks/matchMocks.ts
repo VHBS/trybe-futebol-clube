@@ -118,6 +118,12 @@ const badRequestNewMatch = {
   inProgress: true
 } as Match
 
+const badRequestNewMatchNoTeam = {
+  homeTeam: 16,
+  awayTeam: 500,
+  homeTeamGoals: 2,
+  awayTeamGoals: 2,
+  inProgress: true
+} as Match
 
-
-export { allMatches, allMatchesInProgress, allMatchesEnded, resultNewMatch, requestNewMatch, badRequestNewMatch }
+export { allMatches, allMatchesInProgress, allMatchesEnded, resultNewMatch, requestNewMatch, badRequestNewMatch, badRequestNewMatchNoTeam }

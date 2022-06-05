@@ -20,4 +20,12 @@ const team = {
   teamName: "Avaí/Kindermann"
 } as Team
 
-export { allTeams, team }
+const badResultTeamsById = [
+  {
+    id: 1,
+    teamName: "Avaí/Kindermann"
+  },
+  undefined
+] as Team[]
+
+export { allTeams, team, badResultTeamsById }

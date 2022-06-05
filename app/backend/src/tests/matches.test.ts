@@ -8,8 +8,10 @@ import { app } from '../app';
 
 import { Response } from 'superagent';
 import Match from '../database/models/Match';
-import { allMatches, allMatchesEnded, allMatchesInProgress, resultNewMatch, requestNewMatch, badRequestNewMatch } from './mocks/matchMocks';
+import Team from '../database/models/Team';
+import { allMatches, allMatchesEnded, allMatchesInProgress, resultNewMatch, requestNewMatch, badRequestNewMatch, badRequestNewMatchNoTeam } from './mocks/matchMocks';
 import { adminLogin } from './mocks/userMocks';
+import { badResultTeamsById } from './mocks/teamMocks';
 
 chai.use(chaiHttp);
 
@@ -89,54 +91,89 @@ describe('Matches', () => {
   });
 
   describe('Insere uma partida em andamendo', () => {
-
-    it('Retorna status 401 com uma menssagem', async () => {
-      const { body: { token } } = await chai
-      .request(app)
-      .post('/login')
-      .send(adminLogin)
-
-
-      chaiHttpResponse = await chai
+    describe('Erro ao tentar inserir um time vs ele mesmo', () => {
+      it('Retorna status 401 com uma menssagem', async () => {
+        const { body: { token } } = await chai
         .request(app)
-        .post('/matches')
-        .set({ authorization: token })
-        .send(badRequestNewMatch)
-      
-        const { message } = chaiHttpResponse.body;
+        .post('/login')
+        .send(adminLogin)
   
-      expect(chaiHttpResponse.status).to.be.equal(401);
-      expect(message).equal("It is not possible to create a match with two equal teams")
-    });
-    before(() => {
-      sinon
-        .stub(Match, "create")
-        .resolves(resultNewMatch);
-    });
   
-    after(()=>{
-      (Match.create as sinon.SinonStub).restore();
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/matches')
+          .set({ authorization: token })
+          .send(badRequestNewMatch)
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(401);
+        expect(message).equal("It is not possible to create a match with two equal teams")
+      });
     })
-  
-    it('Retorna status 200 com a partida', async () => {
-      const { body: { token } } = await chai
-      .request(app)
-      .post('/login')
-      .send(adminLogin)
+    
 
-
-      chaiHttpResponse = await chai
+    describe('Erro ao tentar inserir uma partida com um time inexistente', () => {
+      before(() => {
+        sinon
+          .stub(Team, "findAll")
+          .resolves(badResultTeamsById);
+      });
+    
+      after(()=>{
+        (Team.findAll as sinon.SinonStub).restore();
+      });
+      it('Retorna status 404 com uma menssagem', async () => {
+        const { body: { token } } = await chai
         .request(app)
-        .post('/matches')
-        .set({ authorization: token })
-        .send(requestNewMatch)
-      
-        const match = chaiHttpResponse.body;
+        .post('/login')
+        .send(adminLogin)
   
-      expect(chaiHttpResponse.status).to.be.equal(201);
-      expect(match).property('id')
-      expect(match).deep.equal(resultNewMatch)
+  
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/matches')
+          .set({ authorization: token })
+          .send(badRequestNewMatchNoTeam)
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(404);
+        expect(message).equal("There is no team with such id!")
+      });
     });
+
+    describe('Sucesso ao inserir uma partida', () => {
+      before(() => {
+        sinon
+          .stub(Match, "create")
+          .resolves(resultNewMatch);
+      });
+    
+      after(()=>{
+        (Match.create as sinon.SinonStub).restore();
+      })
+    
+      it('Retorna status 200 com a partida', async () => {
+        const { body: { token } } = await chai
+        .request(app)
+        .post('/login')
+        .send(adminLogin)
+  
+  
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/matches')
+          .set({ authorization: token })
+          .send(requestNewMatch)
+        
+          const match = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(201);
+        expect(match).property('id')
+        expect(match).deep.equal(resultNewMatch)
+      });
+    });    
   });
 
   describe('Atualiza uma partida em andamendo para finalizada com sucesso', () => {
