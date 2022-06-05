@@ -9,6 +9,7 @@ import { app } from '../app';
 import { Response } from 'superagent';
 import Match from '../database/models/Match';
 import { allMatches, allMatchesEnded, allMatchesInProgress, resultNewMatch, requestNewMatch } from './mocks/matchMocks';
+import { adminLogin } from './mocks/userMocks';
 
 chai.use(chaiHttp);
 
@@ -99,15 +100,69 @@ describe('Matches', () => {
     })
   
     it('Retorna status 200 com a partida', async () => {
+      const { body: { token } } = await chai
+      .request(app)
+      .post('/login')
+      .send(adminLogin)
+
+
       chaiHttpResponse = await chai
         .request(app)
         .post('/matches')
+        .set({ authorization: token })
         .send(requestNewMatch)
       
         const match = chaiHttpResponse.body;
   
-      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(chaiHttpResponse.status).to.be.equal(201);
+      expect(match).property('id')
       expect(match).deep.equal(resultNewMatch)
+    });
+  });
+
+  describe('Atualiza uma partida em andamendo para finalizada com sucesso', () => {
+    before(() => {
+      sinon
+        .stub(Match, "update")
+        .resolves([1] as any);
+    });
+  
+    after(()=>{
+      (Match.update as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 200 com uma menssagem', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .patch('/matches/1/finish')
+      
+        const { message } = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(message).equal("Finished")
+    });
+  });
+
+  describe('Falha ao tentar atualizar uma partida em andamendo para finalizada', () => {
+    before(() => {
+      sinon
+        .stub(Match, "update")
+        .resolves([0] as any);
+    });
+  
+    after(()=>{
+      (Match.update as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 404 com uma menssagem', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .patch('/matches/1/finish')
+      
+        const { message } = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(404);
+      expect(message).equal("Partida não encontrada ou já finalizada")
     });
   });
 });

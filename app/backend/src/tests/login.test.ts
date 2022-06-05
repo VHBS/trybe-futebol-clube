@@ -9,7 +9,7 @@ import { app } from '../app';
 import User from '../database/models/User';
 
 import { Response } from 'superagent';
-import { adminDb } from './mocks/userMocks';
+import { adminDb, adminLogin } from './mocks/userMocks';
 
 chai.use(chaiHttp);
 
@@ -153,10 +153,7 @@ describe('Login', () => {
       const {body: { token }} = await chai
         .request(app)
         .post('/login')
-        .send({
-          email: "admin@admin.com",
-          password: "secret_admin"
-        })
+        .send(adminLogin)
 
       chaiHttpResponse = await chai
         .request(app)
