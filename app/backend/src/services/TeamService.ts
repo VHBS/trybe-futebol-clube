@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import Team from '../database/models/Team';
 import ITeamService from './interfaces/ITeamService';
 
@@ -17,5 +18,13 @@ export default class TeamService implements ITeamService {
     const result = await this._teamModel.findOne({ where: { id } });
     if (!result) return { code: 404, message: { message: 'Time não encontrado' } };
     return { code: 200, message: result };
+  }
+
+  public async getByIds(homeTeamId: number, awayTeamId: number) {
+    const result = await this._teamModel.findAll({ where: { [Op.or]: [
+      { id: homeTeamId },
+      { id: awayTeamId },
+    ] } });
+    return result;
   }
 }
