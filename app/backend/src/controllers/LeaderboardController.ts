@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import LeaderBoardHomeService from '../services/LeaderboardService';
+import LeaderBoardHomeService from '../services/LeaderboardHomeService';
 import ILeaderboardController from './interfaces/ILeaderboardController';
 
 export default class LeaderBoardController implements ILeaderboardController {

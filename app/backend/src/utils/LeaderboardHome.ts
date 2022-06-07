@@ -63,7 +63,6 @@ export default class LeaderboardHome {
     teamUpdated.totalVictories += 1;
     teamUpdated.efficiency = Number((((team.totalPoints + 3)
     / ((team.totalGames + 1) * 3)) * 100).toFixed(2));
-    console.log(teamUpdated);
     return teamUpdated;
   }
 
