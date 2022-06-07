@@ -221,4 +221,28 @@ describe('Matches', () => {
       expect(message).equal("Partida não encontrada ou já finalizada")
     });
   });
+
+  describe('Atualiza os gols de uma partida', () => {
+    before(() => {
+      sinon
+        .stub(Match, "update")
+        .resolves([1, []]);
+    });
+  
+    after(()=>{
+      (Match.update as sinon.SinonStub).restore();
+    })
+  
+    it('Retorna status 200 com uma menssagem', async () => {
+      chaiHttpResponse = await chai
+        .request(app)
+        .patch('/matches/1')
+        .send()
+      
+        const { message } = chaiHttpResponse.body;
+  
+      expect(chaiHttpResponse.status).to.be.equal(200);
+      expect(message).equal("Gols atualizados")
+    });
+  });
 });
