@@ -11,12 +11,11 @@ export default class ErrorMiddleware implements IErrorMiddleware {
   }
 
   async server(
-    err: ErrorRequestHandler,
+    _err: ErrorRequestHandler,
     _req: Request,
     res: Response,
     _next: NextFunction,
   ): Promise<Response> {
-    console.log('erro:', err);
     return res.status(this._code).json({ message: this._message });
   }
 }
