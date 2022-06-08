@@ -1,5 +1,6 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import * as jwt from 'jsonwebtoken';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 import { before } from 'mocha';
@@ -137,10 +138,9 @@ describe('Login', () => {
   });
 
   describe('Valida a role do usuário', () => {
-
     describe('Login validado com sucesso', () => {
 
-      before(async () => {
+      before(() => {
         sinon
           .stub(User, "findOne")
           .resolves(adminDb)
@@ -168,6 +168,35 @@ describe('Login', () => {
       });
     });
 
+    describe('Erro ao validar role', () => {
+      before(() => {
+        sinon
+          .stub(jwt, "verify")
+          .throws()
+      });
+    
+      after(()=>{
+        (jwt.verify as sinon.SinonStub).restore();
+      })
+
+      it('Retorna status 500 e a menssagem "Erro inesperado"', async () => {
+        const {body: { token }} = await chai
+          .request(app)
+          .post('/login')
+          .send(adminLogin)
+
+        chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+          .set({ authorization: token })
+    
+        const {message} = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(500);
+        expect(message).equal('Erro inesperado')
+      });
+    });
+
     describe('Token não encontrado', () => {
       it('Retorna status 400 e a menssagem "Token não encontrado"', async () => {
 
@@ -179,6 +208,31 @@ describe('Login', () => {
     
         expect(chaiHttpResponse.status).to.be.equal(400);
         expect(message).equal("Token não encontrado")
+      });
+    });
+
+    describe('Erro no servidor', () => {
+
+      before(() => {
+        sinon
+          .stub(jwt, "sign")
+          .throws()
+      });
+    
+      after(()=>{
+        (jwt.sign as sinon.SinonStub).restore();
+      })
+
+      it('Retorna status 500 e a menssagem "Erro inesperado"', async () => {
+        const chaiHttpResponse = await chai
+          .request(app)
+          .post('/login')
+          .send(adminLogin)
+
+          const { message } = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(500);
+        expect(message).equal('Erro inesperado')
       });
     });
   });
