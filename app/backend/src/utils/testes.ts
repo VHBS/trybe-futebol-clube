@@ -157,7 +157,7 @@ const verifyMatches = (
       acc.push(LeaderBoard.create(curr));
       return acc;
     }
-    acc[teamsOnBoardHome.index] = LeaderBoard.updateHome(acc[teamsOnBoardHome.index], curr);
+    acc[teamsOnBoardHome.index] = LeaderBoard.update(acc[teamsOnBoardHome.index], curr);
     return acc;
   }, [] as LeaderbordTeam[]);
   return result;

@@ -36,7 +36,7 @@ export default class LeaderBoardHomeService implements ILeaderBoardHomeService {
         return acc;
       }
       const leaderboardTeam = acc[teamOnBoardHome.index];
-      acc[teamOnBoardHome.index] = LeaderboardHome.updateHome(leaderboardTeam, match);
+      acc[teamOnBoardHome.index] = LeaderboardHome.update(leaderboardTeam, match);
       return acc;
     }, [] as LeaderbordTeam[]);
     return result;
