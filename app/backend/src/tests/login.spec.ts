@@ -137,34 +137,49 @@ describe('Login', () => {
   });
 
   describe('Valida a role do usuário', () => {
-  describe('Login validado com sucesso', () => {
 
-    before(async () => {
-      sinon
-        .stub(User, "findOne")
-        .resolves(adminDb)
+    describe('Login validado com sucesso', () => {
+
+      before(async () => {
+        sinon
+          .stub(User, "findOne")
+          .resolves(adminDb)
+      });
+    
+      after(()=>{
+        (User.findOne as sinon.SinonStub).restore();
+      })
+
+      it('Retorna status 200 e a role do usuario', async () => {
+        const {body: { token }} = await chai
+          .request(app)
+          .post('/login')
+          .send(adminLogin)
+
+        chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+          .set({ authorization: token })
+    
+        const role = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(200);
+        expect(role).equal("admin")
+      });
     });
-  
-    after(()=>{
-      (User.findOne as sinon.SinonStub).restore();
-    })
 
-    it('Retorna status 200 e a role do usuario', async () => {
-      const {body: { token }} = await chai
-        .request(app)
-        .post('/login')
-        .send(adminLogin)
+    describe('Token não encontrado', () => {
+      it('Retorna status 400 e a menssagem "Token não encontrado"', async () => {
 
-      chaiHttpResponse = await chai
-        .request(app)
-        .get('/login/validate')
-        .set({ authorization: token })
-  
-      const role = chaiHttpResponse.body
-  
-      expect(chaiHttpResponse.status).to.be.equal(200);
-      expect(role).equal("admin")
+        chaiHttpResponse = await chai
+          .request(app)
+          .get('/login/validate')
+    
+        const { message } = chaiHttpResponse.body
+    
+        expect(chaiHttpResponse.status).to.be.equal(400);
+        expect(message).equal("Token não encontrado")
+      });
     });
-  });
   });
 });

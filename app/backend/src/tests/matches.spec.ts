@@ -1,5 +1,6 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
+import * as jwt from 'jsonwebtoken';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 import { before } from 'mocha';
@@ -91,6 +92,20 @@ describe('Matches', () => {
   });
 
   describe('Insere uma partida em andamendo', () => {
+
+    describe('Erro ao tentar inserir um time sem token', () => {
+      it('Retorna status 400 com uma menssagem', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/matches')
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(400);
+        expect(message).equal("Token não encontrado")
+      });
+    });
+
     describe('Erro ao tentar inserir um time vs ele mesmo', () => {
       it('Retorna status 401 com uma menssagem', async () => {
         const { body: { token } } = await chai
@@ -110,7 +125,7 @@ describe('Matches', () => {
         expect(chaiHttpResponse.status).to.be.equal(401);
         expect(message).equal("It is not possible to create a match with two equal teams")
       });
-    })
+    });
     
 
     describe('Erro ao tentar inserir uma partida com um time inexistente', () => {
@@ -223,26 +238,106 @@ describe('Matches', () => {
   });
 
   describe('Atualiza os gols de uma partida', () => {
-    before(() => {
-      sinon
-        .stub(Match, "update")
-        .resolves([1, []]);
+    describe('Sucesso ao atualizar os gols de uma partida', () => {
+      before(() => {
+        sinon
+          .stub(Match, "update")
+          .resolves([1, []]);
+      });
+    
+      after(()=>{
+        (Match.update as sinon.SinonStub).restore();
+      })
+    
+      it('Retorna status 200 com uma menssagem', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .patch('/matches/1')
+          .send()
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(200);
+        expect(message).equal("Gols atualizados")
+      });
     });
-  
-    after(()=>{
-      (Match.update as sinon.SinonStub).restore();
-    })
-  
-    it('Retorna status 200 com uma menssagem', async () => {
-      chaiHttpResponse = await chai
+    describe('Falha ao atualizar os gols de uma partida', () => {
+      before(() => {
+        sinon
+          .stub(Match, "update")
+          .resolves([0, []]);
+      });
+    
+      after(()=>{
+        (Match.update as sinon.SinonStub).restore();
+      })
+    
+      it('Retorna status 404 com uma menssagem', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .patch('/matches/1')
+          .send()
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(404);
+        expect(message).equal("Partida não encontrada, já finalizada ou já possui os dados inseridos")
+      });      
+    });
+
+    describe('Erro no middleware de login', () => {
+      before(() => {
+        sinon
+          .stub(jwt, "verify")
+          .throws();
+      });
+    
+      after(()=>{
+        (jwt.verify as sinon.SinonStub).restore();
+      })
+    
+      it('Retorna status 500 com uma menssagem', async () => {
+        const { body: { token } } = await chai
         .request(app)
-        .patch('/matches/1')
-        .send()
-      
-        const { message } = chaiHttpResponse.body;
+        .post('/login')
+        .send(adminLogin)
   
-      expect(chaiHttpResponse.status).to.be.equal(200);
-      expect(message).equal("Gols atualizados")
+  
+        chaiHttpResponse = await chai
+          .request(app)
+          .post('/matches')
+          .set({ authorization: token })
+          .send(requestNewMatch)
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(500);
+        expect(message).equal('Erro inesperado')
+      });
+    });
+
+    describe('Erro no servidor', () => {
+      before(() => {
+        sinon
+          .stub(Match, "update")
+          .throws();
+      });
+    
+      after(()=>{
+        (Match.update as sinon.SinonStub).restore();
+      })
+    
+      it('Retorna status 500 com uma menssagem', async () => {
+        chaiHttpResponse = await chai
+          .request(app)
+          .patch('/matches/1')
+          .send()
+        
+          const { message } = chaiHttpResponse.body;
+    
+        expect(chaiHttpResponse.status).to.be.equal(500);
+        expect(message).equal('Erro inesperado')
+      });
     });
   });
 });
