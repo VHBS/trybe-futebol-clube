@@ -28,14 +28,15 @@ export default class LeaderBoardHomeService implements ILeaderBoardHomeService {
 
   public makeLeaderBoardHome = (matches: Match[]): LeaderbordTeam[] => {
     const teams = [] as { nome: string, index: number }[];
-    const result = matches.reduce((acc, curr, index) => {
-      const teamsOnBoardHome = teams.find(({ nome }) => nome === curr.teamHome.teamName);
-      if (!teamsOnBoardHome) {
-        teams.push({ nome: curr.teamHome.teamName, index });
-        acc.push(LeaderboardHome.create(curr));
+    const result = matches.reduce((acc, match, index) => {
+      const teamOnBoardHome = teams.find(({ nome }) => nome === match.teamHome.teamName);
+      if (!teamOnBoardHome) {
+        teams.push({ nome: match.teamHome.teamName, index });
+        acc.push(LeaderboardHome.create(match));
         return acc;
       }
-      acc[teamsOnBoardHome.index] = LeaderboardHome.updateHome(acc[teamsOnBoardHome.index], curr);
+      const leaderboardTeam = acc[teamOnBoardHome.index];
+      acc[teamOnBoardHome.index] = LeaderboardHome.updateHome(leaderboardTeam, match);
       return acc;
     }, [] as LeaderbordTeam[]);
     return result;
