@@ -3,38 +3,14 @@ import db from '.';
 import Team from './Team';
 
 class Match extends Model {
-  private _id: number;
-  private _homeTeam: number;
-  private _homeTeamGoals: number;
-  private _awayTeam: number;
-  private _awayTeamGoals: number;
-  private _inProgress: boolean;
-  teamHome: { teamName: string };
-  teamAway: { teamName: string };
-
-  get id(): number {
-    return this._id;
-  }
-
-  get homeTeam(): number {
-    return this._homeTeam;
-  }
-
-  get homeTeamGoals(): number {
-    return this._homeTeamGoals;
-  }
-
-  get awayTeam(): number {
-    return this._awayTeam;
-  }
-
-  get awayTeamGoals(): number {
-    return this._awayTeamGoals;
-  }
-
-  get inProgress(): boolean {
-    return this._inProgress;
-  }
+  public id: number;
+  public homeTeam: number;
+  public homeTeamGoals: number;
+  public awayTeam: number;
+  public awayTeamGoals: number;
+  public inProgress: boolean;
+  public teamHome: { teamName: string };
+  public teamAway: { teamName: string };
 }
 
 Match.init({
