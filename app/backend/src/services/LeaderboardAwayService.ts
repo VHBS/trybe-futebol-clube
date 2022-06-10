@@ -1,17 +1,17 @@
-import LeaderboardHome from '../utils/LeaderboardHome';
+import LeaderboardAway from '../utils/LeaderboardAway';
 import Team from '../database/models/Team';
 import Match from '../database/models/Match';
 import { LeaderbordTeam } from './types/LeaderbordTeam';
-import ILeaderBoardHomeService from './interfaces/ILeaderboardHomeService';
+import ILeaderBoardAwayService from './interfaces/ILeaderboardAwayService';
 
-export default class LeaderboardHomeService implements ILeaderBoardHomeService {
+export default class LeaderboardAwayService implements ILeaderBoardAwayService {
   private _matchModel;
 
   constructor() {
     this._matchModel = Match;
   }
 
-  public async home() {
+  public async away() {
     const matchesResult = await this._matchModel.findAll({
       where: { inProgress: false },
       include: [
@@ -19,24 +19,24 @@ export default class LeaderboardHomeService implements ILeaderBoardHomeService {
         { model: Team, as: 'teamAway', attributes: { exclude: ['id'] } },
       ],
     });
-    const leaderBoardHome = this.makeLeaderBoardHome(matchesResult)
+    const leaderBoardAway = this.makeLeaderBoardAway(matchesResult)
       .sort(this.organizeLeaderboard)
       .sort((a:LeaderbordTeam, b:LeaderbordTeam) => b.totalPoints - a.totalPoints);
 
-    return { code: 200, message: leaderBoardHome };
+    return { code: 200, message: leaderBoardAway };
   }
 
-  public makeLeaderBoardHome = (matches: Match[]): LeaderbordTeam[] => {
-    const teamsHome = [] as { nome: string, index: number }[];
+  public makeLeaderBoardAway = (matches: Match[]): LeaderbordTeam[] => {
+    const teams = [] as { nome: string, index: number }[];
     const result = matches.reduce((acc, match, index) => {
-      const teamOnBoardHome = teamsHome.find(({ nome }) => nome === match.teamHome.teamName);
-      if (!teamOnBoardHome) {
-        teamsHome.push({ nome: match.teamHome.teamName, index });
-        acc.push(LeaderboardHome.create(match));
+      const teamOnBoardAway = teams.find(({ nome }) => nome === match.teamAway.teamName);
+      if (!teamOnBoardAway) {
+        teams.push({ nome: match.teamAway.teamName, index });
+        acc.push(LeaderboardAway.create(match));
         return acc;
       }
-      const leaderboardTeam = acc[teamOnBoardHome.index];
-      acc[teamOnBoardHome.index] = LeaderboardHome.update(leaderboardTeam, match);
+      const leaderboardTeam = acc[teamOnBoardAway.index];
+      acc[teamOnBoardAway.index] = LeaderboardAway.update(leaderboardTeam, match);
       return acc;
     }, [] as LeaderbordTeam[]);
     return result;
@@ -51,6 +51,6 @@ export default class LeaderboardHomeService implements ILeaderBoardHomeService {
     if (a.goalsFavor < b.goalsFavor) return 1;
     if (a.goalsOwn > b.goalsOwn) return -1;
     if (a.goalsOwn < b.goalsOwn) return 1;
-    return b.totalPoints - a.totalPoints;
+    return 0;
   };
 }

@@ -1,16 +1,29 @@
 import { NextFunction, Request, Response } from 'express';
-import LeaderBoardHomeService from '../services/LeaderboardHomeService';
+import LeaderboardAwayService from '../services/LeaderboardAwayService';
+import LeaderboardHomeService from '../services/LeaderboardHomeService';
 import ILeaderboardController from './interfaces/ILeaderboardController';
 
-export default class LeaderBoardController implements ILeaderboardController {
-  private _leaderboardService;
+export default class LeaderboardController implements ILeaderboardController {
+  private _leaderboardServiceHome;
+  private _leaderboardServiceAway;
+
   constructor() {
-    this._leaderboardService = new LeaderBoardHomeService();
+    this._leaderboardServiceHome = new LeaderboardHomeService();
+    this._leaderboardServiceAway = new LeaderboardAwayService();
   }
 
   public async home(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
     try {
-      const result = await this._leaderboardService.home();
+      const result = await this._leaderboardServiceHome.home();
+      return res.status(result.code).json(result.message);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async away(_req: Request, res: Response, next: NextFunction): Promise<Response | void> {
+    try {
+      const result = await this._leaderboardServiceAway.away();
       return res.status(result.code).json(result.message);
     } catch (e) {
       next(e);
