@@ -1,7 +1,7 @@
 import LeaderboardHome from '../utils/LeaderboardHome';
 import Team from '../database/models/Team';
 import Match from '../database/models/Match';
-import { LeaderbordTeam } from './types/LeaderbordTeam';
+import { LeaderbordTeam } from './types/TypeLeaderbordService';
 import ILeaderBoardHomeService from './interfaces/ILeaderboardHomeService';
 
 export default class LeaderboardHomeService implements ILeaderBoardHomeService {

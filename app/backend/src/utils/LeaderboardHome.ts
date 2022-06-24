@@ -1,4 +1,4 @@
-import { LeaderbordTeam } from '../services/types/LeaderbordTeam';
+import { LeaderbordTeam } from '../services/types/TypeLeaderbordService';
 import Match from '../database/models/Match';
 
 export default class LeaderboardHome {

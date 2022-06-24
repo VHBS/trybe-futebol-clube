@@ -1,7 +1,7 @@
 import LeaderboardAway from '../utils/LeaderboardAway';
 import Team from '../database/models/Team';
 import Match from '../database/models/Match';
-import { LeaderbordTeam } from './types/LeaderbordTeam';
+import { LeaderbordTeam } from './types/TypeLeaderbordService';
 import ILeaderBoardAwayService from './interfaces/ILeaderboardAwayService';
 
 export default class LeaderboardAwayService implements ILeaderBoardAwayService {

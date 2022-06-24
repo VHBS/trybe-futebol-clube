@@ -1,5 +1,5 @@
 import Match from '../../database/models/Match';
-import { LeaderboardServiceHome, LeaderbordTeam } from '../types/LeaderbordTeam';
+import { LeaderboardServiceHome, LeaderbordTeam } from '../types/TypeLeaderbordService';
 
 export default interface ILeaderBoardAwayService {
   away(): Promise<LeaderboardServiceHome>
