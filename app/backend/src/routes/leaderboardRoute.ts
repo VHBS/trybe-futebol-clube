@@ -12,6 +12,10 @@ leaderboardRouter
   .get(
     '/away',
     leaderboardController.away.bind(leaderboardController),
+  )
+  .get(
+    '/',
+    leaderboardController.homeAndAway.bind(leaderboardController),
   );
 
 export default leaderboardRouter;
